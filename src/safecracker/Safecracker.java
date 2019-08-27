@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Random;
 
 public class Safecracker extends JFrame {
 
@@ -25,6 +26,12 @@ public class Safecracker extends JFrame {
     private JPanel resultsPanel = new JPanel();
     private JScrollPane resultsPane = new JScrollPane();
     private JTextArea resultsTextArea = new JTextArea();
+
+    private int numberDigits;
+    private String secretCombo;
+    private Random myRandom = new Random();
+    private int digitsEntered;
+    private String enteredCombo;
 
     public static void main(String[] args) {
         new Safecracker().show();
@@ -181,6 +188,7 @@ public class Safecracker extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         System.out.println("screensize: width " + screenSize.width + " height " + screenSize.height);
         setBounds((int) (0.5 * (screenSize.width - getWidth())), (int) (0.5 * (screenSize.height - getHeight())), getWidth(), getHeight());
+        setKeyButtons(false);
     }
 
     private void exitForm(WindowEvent e) {
@@ -188,14 +196,91 @@ public class Safecracker extends JFrame {
     }
 
     private void keyButtonActionPerformed(ActionEvent e) {
-
+        String n;
+        n = e.getActionCommand();
+        keyButton[Integer.valueOf(n).intValue() - 1].setEnabled(false);
+        if (digitsEntered == 0) {
+            comboTextField[0].setText("");
+            comboTextField[1].setText("");
+            comboTextField[2].setText("");
+            comboTextField[3].setText("");
+        }
+        enteredCombo += n;
+        digitsEntered++;
+        comboTextField[digitsEntered - 1].setText(n);
+        if (digitsEntered == numberDigits) {
+            for (int i = 0; i < keyButton.length; i++) {
+                keyButton[i].setEnabled(true);
+                System.out.println("enteredCombo: " + enteredCombo);
+            }
+        }
     }
 
     private void startStopButtonActionPerformed(ActionEvent e) {
+        if (startStopButton.getText().equals("Start Game")) {
+            startStopButton.setText("Stop Game");
+            twoDigitsRadioButton.setEnabled(false);
+            threeDigitsRadioButton.setEnabled(false);
+            fourDigitsRadioButton.setEnabled(false);
+            exitButton.setEnabled(false);
+            setKeyButtons(true);
+            resultsTextArea.setText("");
+            if (twoDigitsRadioButton.isSelected()) {
+                numberDigits = 2;
+            } else if (threeDigitsRadioButton.isSelected()) {
+                numberDigits = 3;
+            } else {
+                numberDigits = 4;
+            }
+            for (int i = 0; i < comboTextField.length; i++) {
+                comboTextField[i].setVisible(true);
+                comboTextField[i].setText("");
+            }
+            if (numberDigits != 4) {
+                for (int i = numberDigits; i < 4; i++) {
+                    comboTextField[i].setVisible(false);
+                }
+            }
+
+            secretCombo = "";
+            int j;
+            boolean uniqueDigit;
+            for (int i = 0; i < numberDigits; i++) {
+                do {
+                    j = myRandom.nextInt(9) + 1;
+                    uniqueDigit = true;
+                    if (i != 0) {
+                        for (int k = 0; k < i; k++) {
+                            if (String.valueOf(secretCombo.charAt(k)).equals(String.valueOf(j))) {
+                                uniqueDigit = false;
+                            }
+                        }
+                    }
+                } while (!uniqueDigit);
+                secretCombo += String.valueOf(j);
+            }
+            System.out.println("secretCombo: " + secretCombo);
+        } else {
+            startStopButton.setText("Start Game");
+            twoDigitsRadioButton.setEnabled(true);
+            threeDigitsRadioButton.setEnabled(true);
+            fourDigitsRadioButton.setEnabled(true);
+            exitButton.setEnabled(true);
+            setKeyButtons(false);
+        }
+
+        enteredCombo = "";
+        digitsEntered = 0;
 
     }
 
     private void exitButtonActionPerformed(ActionEvent e) {
+        System.exit(0);
+    }
 
+    private void setKeyButtons(boolean enabled) {
+        for (int i = 0; i < keyButton.length; i++) {
+            keyButton[i].setEnabled(enabled);
+        }
     }
 }
