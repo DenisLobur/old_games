@@ -1,2 +1,3 @@
 # old_games
-1. Start working on StopWatch project
+1. StopWatch project
+2. Safecracker project
