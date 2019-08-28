@@ -1,11 +1,14 @@
 package safecracker;
 
 import javax.swing.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 import java.util.Random;
 
 public class Safecracker extends JFrame {
@@ -32,6 +35,9 @@ public class Safecracker extends JFrame {
     private Random myRandom = new Random();
     private int digitsEntered;
     private String enteredCombo;
+
+    private AudioClip wrongSound;
+    private AudioClip correctSound;
 
     public static void main(String[] args) {
         new Safecracker().show();
@@ -189,6 +195,13 @@ public class Safecracker extends JFrame {
         System.out.println("screensize: width " + screenSize.width + " height " + screenSize.height);
         setBounds((int) (0.5 * (screenSize.width - getWidth())), (int) (0.5 * (screenSize.height - getHeight())), getWidth(), getHeight());
         setKeyButtons(false);
+
+        try {
+            wrongSound = Applet.newAudioClip(new URL("file:" + "win31.ogv"));
+            correctSound = Applet.newAudioClip(new URL("file:" + "win31.ogv"));
+        } catch (Exception e) {
+            System.out.println("Error loading sound files");
+        }
     }
 
     private void exitForm(WindowEvent e) {
@@ -212,6 +225,33 @@ public class Safecracker extends JFrame {
             for (int i = 0; i < keyButton.length; i++) {
                 keyButton[i].setEnabled(true);
                 System.out.println("enteredCombo: " + enteredCombo);
+            }
+            resultsTextArea.setText("Entered: " + enteredCombo + "\n");
+            if (enteredCombo.equals(secretCombo)) {
+                correctSound.play();
+                startStopButton.doClick();
+            } else {
+                wrongSound.play();
+                int numberRight = 0;
+                for (int i = 0; i < numberDigits; i++) {
+                    n = String.valueOf(enteredCombo.charAt(i));
+                    for (int j = 0; j < numberDigits; j++) {
+                        if (n.equals(String.valueOf(secretCombo.charAt(j)))) {
+                            numberRight++;
+                        }
+                    }
+                }
+                int positionRight = 0;
+                for (int i = 0; i < numberDigits; i++) {
+                    if (secretCombo.charAt(i) == enteredCombo.charAt(i)) {
+                        positionRight++;
+                    }
+                }
+                resultsTextArea.append(String.valueOf(numberRight) + " digits correct" + "\n");
+                resultsTextArea.append(String.valueOf(positionRight) + " in correct position" + "\n");
+                resultsTextArea.append("Try again..." + "\n\n");
+                enteredCombo = "";
+                digitsEntered = 0;
             }
         }
     }
@@ -261,6 +301,12 @@ public class Safecracker extends JFrame {
             }
             System.out.println("secretCombo: " + secretCombo);
         } else {
+            if (enteredCombo.equals(secretCombo)) {
+                resultsTextArea.append("That's it!" + "\n");
+            } else {
+                resultsTextArea.append("Game stopped" + "\n");
+            }
+            resultsTextArea.append("Combination: " + secretCombo);
             startStopButton.setText("Start Game");
             twoDigitsRadioButton.setEnabled(true);
             threeDigitsRadioButton.setEnabled(true);
