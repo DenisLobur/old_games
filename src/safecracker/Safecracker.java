@@ -197,8 +197,8 @@ public class Safecracker extends JFrame {
         setKeyButtons(false);
 
         try {
-            wrongSound = Applet.newAudioClip(new URL("file:" + "win31.ogv"));
-            correctSound = Applet.newAudioClip(new URL("file:" + "win31.ogv"));
+            wrongSound = Applet.newAudioClip(new URL("file:" + "uhoh.wav"));
+            correctSound = Applet.newAudioClip(new URL("file:" + "owin31.wav"));
         } catch (Exception e) {
             System.out.println("Error loading sound files");
         }
