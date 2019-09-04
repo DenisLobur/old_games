@@ -2,16 +2,29 @@ package safecracker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.net.CookieHandler;
 
 public class TicTacToe extends JFrame {
     private JTextField messageTextField = new JTextField();
     private JPanel gamePanel = new JPanel();
     private JTextField[] boxTextField = new JTextField[9];
     private JLabel[] gridLabel = new JLabel[4];
+    private JPanel playersPanel = new JPanel();
+    private ButtonGroup playersButtonGroup = new ButtonGroup();
+    private JRadioButton onePlayerRadioButton = new JRadioButton();
+    private JRadioButton twoPlayersRadioButton = new JRadioButton();
+    private JPanel firstPanel = new JPanel();
+    private ButtonGroup firstButtonGroup = new ButtonGroup();
+    private JRadioButton youFirstRadioButton = new JRadioButton();
+    private JRadioButton computerFirstRadioButton = new JRadioButton();
+    private JPanel computerPanel = new JPanel();
+    private ButtonGroup computerButtonGroup = new ButtonGroup();
+    private JRadioButton randomRadioButton = new JRadioButton();
+    private JRadioButton smartRadioButton = new JRadioButton();
+    private JPanel buttonsPanel = new JPanel();
+    private JButton startStopButton = new JButton();
+    private JButton exitButton = new JButton();
 
     public static void main(String[] args) {
         new TicTacToe().show();
@@ -121,6 +134,132 @@ public class TicTacToe extends JFrame {
         gridBagConstraints.insets = new Insets(0, 5, 0, 5);
         gamePanel.add(gridLabel[3], gridBagConstraints);
 
+        playersPanel.setPreferredSize(new Dimension(160, 75));
+        playersPanel.setBackground(Color.WHITE);
+        playersPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        playersPanel.setLayout(new GridBagLayout());
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new Insets(5, 10, 5, 10);
+        getContentPane().add(playersPanel, gridBagConstraints);
+
+        twoPlayersRadioButton.setText("Two Players");
+        twoPlayersRadioButton.setBackground(Color.WHITE);
+        twoPlayersRadioButton.setSelected(true);
+        playersButtonGroup.add(twoPlayersRadioButton);
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        playersPanel.add(twoPlayersRadioButton, gridBagConstraints);
+        twoPlayersRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                twoPlayersRadioButtonActionPerformed(e);
+            }
+        });
+
+        onePlayerRadioButton.setText("One Player");
+        onePlayerRadioButton.setBackground(Color.WHITE);
+        playersButtonGroup.add(onePlayerRadioButton);
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        playersPanel.add(onePlayerRadioButton, gridBagConstraints);
+        onePlayerRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onePlayerRadioButtonActionPerformed(e);
+            }
+        });
+
+        firstPanel.setPreferredSize(new Dimension(160, 75));
+        firstPanel.setBackground(Color.WHITE);
+        firstPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        firstPanel.setLayout(new GridBagLayout());
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new Insets(5, 10, 5, 10);
+        getContentPane().add(firstPanel, gridBagConstraints);
+
+        youFirstRadioButton.setText("You First");
+        youFirstRadioButton.setBackground(Color.WHITE);
+        youFirstRadioButton.setSelected(true);
+        firstButtonGroup.add(youFirstRadioButton);
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        firstPanel.add(youFirstRadioButton, gridBagConstraints);
+
+        computerFirstRadioButton.setText("Computer First");
+        computerFirstRadioButton.setBackground(Color.WHITE);
+        firstButtonGroup.add(computerFirstRadioButton);
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        firstPanel.add(computerFirstRadioButton, gridBagConstraints);
+
+        computerPanel.setPreferredSize(new Dimension(160, 75));
+        computerPanel.setBackground(Color.WHITE);
+        computerPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        computerPanel.setLayout(new GridBagLayout());
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new Insets(5, 10, 5, 10);
+        getContentPane().add(computerPanel, gridBagConstraints);
+        randomRadioButton.setText("Random Computer");
+        randomRadioButton.setBackground(Color.WHITE);
+        randomRadioButton.setSelected(true);
+        computerButtonGroup.add(randomRadioButton);
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        computerPanel.add(randomRadioButton, gridBagConstraints);
+        smartRadioButton.setText("Smart Computer");
+        smartRadioButton.setBackground(Color.WHITE);
+        computerButtonGroup.add(smartRadioButton);
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        computerPanel.add(smartRadioButton, gridBagConstraints);
+
+        buttonsPanel.setPreferredSize(new Dimension(160, 70));
+        buttonsPanel.setBackground(Color.WHITE);
+        buttonsPanel.setLayout(new GridBagLayout());
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        getContentPane().add(buttonsPanel, gridBagConstraints);
+        startStopButton.setText("Start Game");
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        buttonsPanel.add(startStopButton, gridBagConstraints);
+        startStopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                startStopButtonActionPerformed(e);
+            }
+        });
+        exitButton.setText("Exit");
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new Insets(10, 0, 0, 0);
+        buttonsPanel.add(exitButton, gridBagConstraints);
+        exitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                exitButtonActionPerformed(e);
+            }
+        });
+
         pack();
     }
 
@@ -129,6 +268,22 @@ public class TicTacToe extends JFrame {
     }
 
     private void boxTextFieldMousePressed(MouseEvent e) {
+
+    }
+
+    private void twoPlayersRadioButtonActionPerformed(ActionEvent e) {
+
+    }
+
+    private void onePlayerRadioButtonActionPerformed(ActionEvent e) {
+
+    }
+
+    private void startStopButtonActionPerformed(ActionEvent e) {
+
+    }
+
+    private void exitButtonActionPerformed(ActionEvent e) {
 
     }
 }
