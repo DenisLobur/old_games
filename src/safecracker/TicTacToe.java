@@ -26,6 +26,10 @@ public class TicTacToe extends JFrame {
     private JButton startStopButton = new JButton();
     private JButton exitButton = new JButton();
 
+    private boolean xTurn;
+    private boolean canClick = false;
+    private int numberClicks;
+
     public static void main(String[] args) {
         new TicTacToe().show();
     }
@@ -260,6 +264,12 @@ public class TicTacToe extends JFrame {
             }
         });
 
+        messageTextField.setText("Game Stopped");
+        youFirstRadioButton.setEnabled(false);
+        computerFirstRadioButton.setEnabled(false);
+        randomRadioButton.setEnabled(false);
+        smartRadioButton.setEnabled(false);
+
         pack();
     }
 
@@ -268,7 +278,16 @@ public class TicTacToe extends JFrame {
     }
 
     private void boxTextFieldMousePressed(MouseEvent e) {
-
+        if (canClick) {
+            int i;
+            Point p = e.getComponent().getLocation();
+            for (i = 0; i < 9; i++) {
+                if (p.x == boxTextField[i].getX() && p.y == boxTextField[i].getY()) {
+                    break;
+                }
+            }
+            markClickedBox(i);
+        }
     }
 
     private void twoPlayersRadioButtonActionPerformed(ActionEvent e) {
@@ -280,10 +299,65 @@ public class TicTacToe extends JFrame {
     }
 
     private void startStopButtonActionPerformed(ActionEvent e) {
-
+        if (startStopButton.getText().equals("Start Game")) {
+            startStopButton.setText("Stop Game");
+            twoPlayersRadioButton.setEnabled(false);
+            onePlayerRadioButton.setEnabled(false);
+            youFirstRadioButton.setEnabled(false);
+            computerFirstRadioButton.setEnabled(false);
+            randomRadioButton.setEnabled(false);
+            smartRadioButton.setEnabled(false);
+            exitButton.setEnabled(false);
+            xTurn = true;
+            messageTextField.setText("X's Turn");
+            for (int i = 0; i < 9; i++) {
+                boxTextField[i].setText("");
+            }
+            canClick = true;
+            numberClicks = 0;
+        } else {
+            startStopButton.setText("Start Game");
+            messageTextField.setText("Game Stopped");
+            twoPlayersRadioButton.setEnabled(true);
+            onePlayerRadioButton.setEnabled(true);
+            if (onePlayerRadioButton.isSelected()) {
+                youFirstRadioButton.setEnabled(true);
+                computerFirstRadioButton.setEnabled(true);
+                randomRadioButton.setEnabled(true);
+                smartRadioButton.setEnabled(true);
+            }
+            exitButton.setEnabled(true);
+            canClick = false;
+        }
     }
 
     private void exitButtonActionPerformed(ActionEvent e) {
+        System.exit(0);
+    }
 
+    private void markClickedBox(int i) {
+        String whoWon = "";
+        if (!boxTextField[i].getText().equals("")) {
+            return;
+        }
+        numberClicks++;
+        if (xTurn) {
+            boxTextField[i].setText("X");
+            xTurn = false;
+            messageTextField.setText("O's Turn");
+        } else {
+            boxTextField[i].setText("O");
+            xTurn = true;
+            messageTextField.setText("X's Turn");
+        }
+        if (!whoWon.equals("")) {
+            messageTextField.setText(whoWon + " wins!");
+            startStopButton.doClick();
+            return;
+        } else if (numberClicks == 9) {
+            messageTextField.setText("It's a draw");
+            startStopButton.doClick();
+            return;
+        }
     }
 }
