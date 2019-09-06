@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.CookieHandler;
+import java.util.Random;
 
 public class TicTacToe extends JFrame {
     private JTextField messageTextField = new JTextField();
@@ -29,6 +30,10 @@ public class TicTacToe extends JFrame {
     private boolean xTurn;
     private boolean canClick = false;
     private int numberClicks;
+
+    private String[] possibleWins = new String[8];
+    private boolean gameOver;
+    private Random myRandom = new Random();
 
     public static void main(String[] args) {
         new TicTacToe().show();
@@ -271,6 +276,15 @@ public class TicTacToe extends JFrame {
         smartRadioButton.setEnabled(false);
 
         pack();
+
+        possibleWins[0] = "012";
+        possibleWins[1] = "345";
+        possibleWins[2] = "678";
+        possibleWins[3] = "036";
+        possibleWins[4] = "147";
+        possibleWins[5] = "258";
+        possibleWins[6] = "048";
+        possibleWins[7] = "246";
     }
 
     private void exitForm(WindowEvent e) {
@@ -291,11 +305,17 @@ public class TicTacToe extends JFrame {
     }
 
     private void twoPlayersRadioButtonActionPerformed(ActionEvent e) {
-
+        youFirstRadioButton.setEnabled(false);
+        computerFirstRadioButton.setEnabled(false);
+        randomRadioButton.setEnabled(false);
+        smartRadioButton.setEnabled(false);
     }
 
     private void onePlayerRadioButtonActionPerformed(ActionEvent e) {
-
+        youFirstRadioButton.setEnabled(true);
+        computerFirstRadioButton.setEnabled(true);
+        randomRadioButton.setEnabled(true);
+        smartRadioButton.setEnabled(true);
     }
 
     private void startStopButtonActionPerformed(ActionEvent e) {
@@ -312,12 +332,19 @@ public class TicTacToe extends JFrame {
             messageTextField.setText("X's Turn");
             for (int i = 0; i < 9; i++) {
                 boxTextField[i].setText("");
+                boxTextField[i].setBackground(Color.WHITE);
             }
             canClick = true;
             numberClicks = 0;
+            gameOver = false;
+            if (computerFirstRadioButton.isSelected()) {
+                computerTurn();
+            }
         } else {
             startStopButton.setText("Start Game");
-            messageTextField.setText("Game Stopped");
+            if (!gameOver) {
+                messageTextField.setText("Game Stopped");
+            }
             twoPlayersRadioButton.setEnabled(true);
             onePlayerRadioButton.setEnabled(true);
             if (onePlayerRadioButton.isSelected()) {
@@ -350,14 +377,105 @@ public class TicTacToe extends JFrame {
             xTurn = true;
             messageTextField.setText("X's Turn");
         }
+        whoWon = checkForWin();
         if (!whoWon.equals("")) {
             messageTextField.setText(whoWon + " wins!");
+            gameOver = true;
             startStopButton.doClick();
             return;
         } else if (numberClicks == 9) {
             messageTextField.setText("It's a draw");
+            gameOver = true;
             startStopButton.doClick();
             return;
+        }
+        if (onePlayerRadioButton.isSelected()) {
+            if ((xTurn && computerFirstRadioButton.isSelected()) || (!xTurn && youFirstRadioButton.isSelected())) {
+                computerTurn();
+            }
+        }
+    }
+
+    private String checkForWin() {
+        String winner = "";
+        int[] boxNumber = new int[3];
+        String[] mark = new String[3];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                boxNumber[j] = Integer.valueOf(String.valueOf(possibleWins[i].charAt(j))).intValue();
+                mark[j] = boxTextField[boxNumber[j]].getText();
+            }
+            if (mark[0].equals(mark[1]) && mark[0].equals(mark[2]) && mark[1].equals(mark[2]) && !mark[0].equals("")) {
+                winner = mark[0];
+                for (int j = 0; j < 3; j++) {
+                    boxTextField[boxNumber[j]].setBackground(Color.RED);
+                }
+            }
+        }
+
+        return winner;
+    }
+
+    private void computerTurn() {
+        int selectedBox;
+        int i, n;
+        int j, k;
+        String computerMark, playerMark, markToFind;
+        int[] boxNumber = new int[3];
+        String[] mark = new String[3];
+        int emptyBox;
+        int[] bestMoves = {4, 0, 2, 6, 8, 1, 3, 5, 7};
+        if (randomRadioButton.isSelected()) {
+            n = myRandom.nextInt(9 - numberClicks) + 1;
+            i = 0;
+            for (selectedBox = 0; selectedBox < 9; selectedBox++) {
+                if (boxTextField[selectedBox].getText().equals("")) {
+                    i++;
+                }
+                if (i == n) {
+                    break;
+                }
+            }
+            markClickedBox(selectedBox);
+        } else {
+            if (computerFirstRadioButton.isSelected()) {
+                computerMark = "X";
+                playerMark = "O";
+            } else {
+                computerMark = "O";
+                playerMark = "X";
+            }
+
+            for (k = 1; k <= 2; k++) {
+                if (k == 1) {
+                    markToFind = computerMark;
+                } else {
+                    markToFind = playerMark;
+                }
+                for (i = 0; i < 8; i++) {
+                    n = 0;
+                    emptyBox = 0;
+                    for (j = 0; j < 3; j++) {
+                        boxNumber[j] = Integer.valueOf(String.valueOf(possibleWins[i].charAt(j))).intValue();
+                        mark[j] = boxTextField[boxNumber[j]].getText();
+                        if (mark[j].equals(markToFind)) {
+                            n++;
+                        } else if (mark[j].equals("")) {
+                            emptyBox = boxNumber[j];
+                        }
+                    }
+                    if (n == 2 && emptyBox != 0) {
+                        markClickedBox(emptyBox);
+                        return;
+                    }
+                }
+            }
+            for (i = 0; i < 9; i++) {
+                if (boxTextField[bestMoves[i]].getText().equals("")) {
+                    markClickedBox(bestMoves[i]);
+                    return;
+                }
+            }
         }
     }
 }
