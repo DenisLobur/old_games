@@ -1,11 +1,8 @@
-package safecracker;
-
 import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.CookieHandler;
 import java.net.URL;
 import java.util.Random;
 
@@ -293,8 +290,8 @@ public class TicTacToe extends JFrame {
         possibleWins[7] = "246";
 
         try {
-            drawSound = Applet.newAudioClip(new URL("file:" + "uhoh.wav"));
-            winSound = Applet.newAudioClip(new URL("file:" + "owin31.wav"));
+            drawSound = Applet.newAudioClip(new URL("file:" + "assets/uhoh.wav"));
+            winSound = Applet.newAudioClip(new URL("file:" + "assets/owin31.wav"));
         } catch (Exception e) {
             System.out.println("Error loading sound files");
         }

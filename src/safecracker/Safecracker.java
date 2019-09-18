@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class Safecracker extends JFrame {
 
-    private ImagePanel safePanel = new ImagePanel(new ImageIcon("screenshot.jpg").getImage());
+    private ImagePanel safePanel = new ImagePanel(new ImageIcon("assets/screenshot.jpg").getImage());
     private JPanel comboPanel = new JPanel();
     private JPanel keyPanel = new JPanel();
     private JPanel optionsPanel = new JPanel();
@@ -197,8 +197,8 @@ public class Safecracker extends JFrame {
         setKeyButtons(false);
 
         try {
-            wrongSound = Applet.newAudioClip(new URL("file:" + "uhoh.wav"));
-            correctSound = Applet.newAudioClip(new URL("file:" + "owin31.wav"));
+            wrongSound = Applet.newAudioClip(new URL("file:" + "assets/uhoh.wav"));
+            correctSound = Applet.newAudioClip(new URL("file:" + "assets/owin31.wav"));
         } catch (Exception e) {
             System.out.println("Error loading sound files");
         }
