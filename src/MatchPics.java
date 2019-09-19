@@ -28,6 +28,8 @@ public class MatchPics extends JFrame {
     private JPanel buttonsPanel = new JPanel();
     private JButton startStopButton = new JButton();
     private JButton exitButton = new JButton();
+    private ImageIcon[] photo = new ImageIcon[10];
+    private ImageIcon cover = new ImageIcon();
 
     public static void main(String[] args) {
         new MatchPics().show();
@@ -275,6 +277,21 @@ public class MatchPics extends JFrame {
         buttonsPanel.add(exitButton, gridBagConstraints);
         exitButton.addActionListener(e -> exitButtonActionPerformed(e));
 
+        photo[0] = new ImageIcon("src/assets/blossom.jpg");
+        photo[1] = new ImageIcon("src/assets/butterfly.jpg");
+        photo[2] = new ImageIcon("src/assets/dandelion.jpg");
+        photo[3] = new ImageIcon("src/assets/elephant.jpg");
+        photo[4] = new ImageIcon("src/assets/lighthouse.jpg");
+        photo[5] = new ImageIcon("src/assets/nature.jpg");
+        photo[6] = new ImageIcon("src/assets/poppy.jpg");
+        photo[7] = new ImageIcon("src/assets/railroad.jpg");
+        photo[8] = new ImageIcon("src/assets/sea.jpg");
+        photo[9] = new ImageIcon("src/assets/stars.jpg");
+        cover = new ImageIcon("src/assets/cover.jpg");
+        for (int i = 0; i < 20; i++)
+            photoLabel[i].setIcon(cover);
+        setPlayWhoButtons(false);
+        setDifficultyButtons(false);
 
         pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -290,19 +307,32 @@ public class MatchPics extends JFrame {
     }
 
     private void twoPlayersRadioButtonActionPerformed(ActionEvent e) {
-
+        setPlayWhoButtons(false);
+        setDifficultyButtons(false);
+        player1Label.setText("Player 1");
+        player2Label.setText("Player 2");
     }
 
     private void onePlayerRadioButtonActionPerformed(ActionEvent e) {
-
+        setPlayWhoButtons(true);
+        player1Label.setText("You");
+        if (playAloneRadioButton.isSelected()) {
+            player2Label.setText("Guesses");
+            setDifficultyButtons(false);
+        } else {
+            player2Label.setText("Computer");
+            setDifficultyButtons(true);
+        }
     }
 
     private void playAloneRadioButtonActionPerformed(ActionEvent e) {
-
+        setDifficultyButtons(false);
+        player2Label.setText("Guesses");
     }
 
     private void playComputerRadioButtonActionPerformed(ActionEvent e) {
-
+        setDifficultyButtons(true);
+        player2Label.setText("Computer");
     }
 
     private void easiestRadioButtonActionPerformed(ActionEvent e) {
@@ -326,6 +356,23 @@ public class MatchPics extends JFrame {
     }
 
     private void exitButtonActionPerformed(ActionEvent e) {
+        System.exit(0);
+    }
 
+    private void setPlayersButtons(boolean a) {
+        onePlayerRadioButton.setEnabled(a);
+        twoPlayersRadioButton.setEnabled(a);
+    }
+
+    private void setPlayWhoButtons(boolean a) {
+        playAloneRadioButton.setEnabled(a);
+        playComputerRadioButton.setEnabled(a);
+    }
+
+    private void setDifficultyButtons(boolean a) {
+        easiestRadioButton.setEnabled(a);
+        easyRadioButton.setEnabled(a);
+        hardRadioButton.setEnabled(a);
+        hardestRadioButton.setEnabled(a);
     }
 }
